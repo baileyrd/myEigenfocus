@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd comprehensive implementation planning documentation\n\nThis commit adds detailed planning documents for Eigenfocus enhancements:\n\n- Reverse engineering analysis of FREE edition codebase\n- Executive summary of technology stack and architecture\n- Frontend architecture documentation \\(React, Stimulus, Turbo\\)\n- Backend architecture documentation \\(Rails 8, SQLite, models\\)\n- Feature comparison between FREE and PRO editions\n- Implementation plan for FREE edition enhancements\n- PRO features implementation plan for custom fork\n\nDocumentation includes:\n- Complete codebase analysis and architecture overview\n- 20+ proposed FREE edition features across 9 categories\n- Phased implementation plan for PRO features\n- Multi-user authentication with Devise\n- Authorization system with Pundit\n- Custom issue statuses and types\n- Views as projections \\(dynamic grouping\\)\n- Grid view with spreadsheet-style interface\n- Database migrations, code examples, and testing strategies\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(bundle install:*)",
+      "Bash(where:*)",
+      "Bash(ruby --version:*)",
+      "Bash(gem --version:*)"
+    ]
+  }
+}

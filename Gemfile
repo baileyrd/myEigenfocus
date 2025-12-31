@@ -51,6 +51,12 @@ gem "view_component", "4.1.1"
 # For configuration files
 gem "dry-struct", "~> 1.8"
 
+# Authentication
+gem "devise", "~> 4.9"
+
+# Authorization
+gem "pundit", "~> 2.3"
+
 # Reports
 # CSV will be removed from ruby 3.4
 gem "csv"
