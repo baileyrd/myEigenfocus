@@ -6,7 +6,20 @@
       "Bash(bundle install:*)",
       "Bash(where:*)",
       "Bash(ruby --version:*)",
-      "Bash(gem --version:*)"
+      "Bash(gem --version:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nPhase 1: Multi-user authentication foundation\n\nImplement Phase 1 of PRO features: Multi-user Authentication with Devise\n\nAdded Dependencies:\n- Devise \\(~> 4.9\\) for authentication\n- Pundit \\(~> 2.3\\) for authorization \\(Phase 2\\)\n\nDatabase Migrations:\n- Add Devise fields to users \\(email, password, tracking\\)\n- Migrate existing single user to admin with credentials\n- Add project ownership \\(owner_id\\) and memberships table\n- Migrate existing projects to be owned by existing user\n- Add issue creator and assigned_user tracking\n- Migrate existing issues to be created by existing user\n\nConfiguration:\n- Devise initializer with Hotwire/Turbo support\n- Email/password authentication\n- Session management with remember me\n- Password recovery\n- User tracking \\(sign in count, IPs\\)\n\nSetup Guide:\n- Comprehensive step-by-step guide \\(PHASE1_SETUP_GUIDE.md\\)\n- Model updates for User, Project, Issue\n- Controller updates for authentication\n- View customization examples\n- Testing strategies with RSpec\n\nFeatures:\n- Multi-user authentication system\n- User registration and login\n- Project ownership model\n- Per-project memberships \\(owner/editor/viewer\\)\n- Issue assignment to users\n- User roles \\(admin/member\\)\n\nNext Steps:\n- Run: bundle install\n- Run: rails db:migrate\n- Follow PHASE1_SETUP_GUIDE.md for complete setup\n- Phase 2: Authorization with Pundit policies\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(docker --version:*)",
+      "Bash(ls:*)",
+      "Bash(docker-compose build:*)",
+      "Bash(docker-compose run:*)",
+      "Bash(cat:*)",
+      "Bash(chmod:*)",
+      "Bash(docker-compose up:*)",
+      "Bash(docker-compose logs:*)",
+      "Bash(docker-compose down:*)",
+      "Bash(docker-compose ps:*)",
+      "Bash(docker-compose restart:*)",
+      "Bash(docker-compose exec:*)"
     ]
   }
 }

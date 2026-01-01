@@ -1,7 +1,7 @@
 class Issue < ApplicationRecord
   ARCHIVING_STATUS_LIST = [ :all, :active, :archived, :finished ]
 
-  # Relations
+  # Relations - Existing
   belongs_to :project
   has_many_attached :files
   has_many :time_entries, dependent: :nullify
@@ -12,6 +12,10 @@ class Issue < ApplicationRecord
   ## Relations/Labels
   has_many :label_links, class_name: "IssueLabelLink", dependent: :destroy
   has_many :labels, through: :label_links, source: :issue_label
+
+  # Relations - Multi-user (Phase 1)
+  belongs_to :creator, class_name: "User", optional: true
+  belongs_to :assigned_user, class_name: "User", optional: true
 
   # Validations
   validates :title, presence: true
@@ -50,6 +54,11 @@ class Issue < ApplicationRecord
     )
   end
 
+  # Scopes - Multi-user (Phase 1)
+  scope :assigned_to, ->(user) { where(assigned_user: user) }
+  scope :created_by, ->(user) { where(creator: user) }
+  scope :unassigned, -> { where(assigned_user_id: nil) }
+
   # Hooks
   before_destroy :ensure_is_archived, unless: -> { destroyed_by_association }
 
@@ -82,7 +91,7 @@ class Issue < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    [ "title", "due_date", "created_at", "updated_at" ]
+    [ "title", "due_date", "created_at", "updated_at", "creator_id", "assigned_user_id" ]
   end
 
   def self.ransackable_associations(auth_object = nil)
@@ -142,5 +151,18 @@ class Issue < ApplicationRecord
       errors.add(:base, :must_be_archived_to_destroy)
       throw(:abort)
     end
+  end
+
+  # Multi-user methods
+  def assigned?
+    assigned_user_id.present?
+  end
+
+  def assign_to(user)
+    update(assigned_user: user)
+  end
+
+  def unassign
+    update(assigned_user: nil)
   end
 end

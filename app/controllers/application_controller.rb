@@ -4,8 +4,10 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
+  # Authentication (Phase 1)
+  before_action :authenticate_user!
+
   # Helpers
-  helper_method :current_user
   helper_method :skip_layout_content_wrapper?, :layout_with_header_width?
   helper_method :t_flash_message
 
@@ -42,9 +44,7 @@ class ApplicationController < ActionController::Base
     AppMetadata.instance.touch_usage!
   end
 
-  def current_user
-    @current_user ||= Current.user
-  end
+  # Note: current_user is now provided by Devise (Phase 1)
 
   def set_layout_with_header_width!
     @layout_with_header_width = true

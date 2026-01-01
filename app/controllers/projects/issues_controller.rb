@@ -32,6 +32,7 @@ class Projects::IssuesController < Projects::BaseController
 
   def create
     @issue = current_project.issues.new(permitted_params)
+    @issue.creator = current_user # Phase 1: Set creator
 
     if @issue.save
       redirect_to project_issues_path, notice: t_flash_message(@issue)

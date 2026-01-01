@@ -16,6 +16,7 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(project_params)
     @project.use_template = params[:project][:use_template]
+    @project.owner = current_user # Phase 1: Set owner
 
     suppressing_template_related_broadcasts do
       if @project.save

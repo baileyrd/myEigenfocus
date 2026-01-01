@@ -1,13 +1,18 @@
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
+  # Devise routes for authentication (Phase 1)
+  devise_for :users
+
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
   get "up" => "rails/health#show", as: :rails_health_check
 
   mount ActionCable.server => "/cable"
 
-  get "design-system" => "design_system#index"
+  # Require authentication for all application routes (Phase 1)
+  authenticate :user do
+    get "design-system" => "design_system#index"
 
   resources :projects do
     member do
@@ -110,6 +115,7 @@ Rails.application.routes.draw do
     end
   end
 
-  # Defines the root path route ("/")
-  root "projects#index"
+    # Defines the root path route ("/")
+    root "projects#index"
+  end # authenticate :user
 end
