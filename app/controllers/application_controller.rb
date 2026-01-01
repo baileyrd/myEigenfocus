@@ -1,11 +1,19 @@
 class ApplicationController < ActionController::Base
   include Pagy::Method
+  include Pundit::Authorization
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
 
   # Authentication (Phase 1)
   before_action :authenticate_user!
+
+  # Authorization (Phase 2)
+  after_action :verify_authorized, except: :index, unless: :devise_controller?
+  after_action :verify_policy_scoped, only: :index, unless: :devise_controller?
+
+  # Pundit error handling
+  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
   # Helpers
   helper_method :skip_layout_content_wrapper?, :layout_with_header_width?
@@ -80,5 +88,12 @@ class ApplicationController < ActionController::Base
         message: message
       }
     )
+  end
+
+  private
+
+  def user_not_authorized
+    flash[:error] = "You are not authorized to perform this action."
+    redirect_to(request.referrer || root_path)
   end
 end

@@ -1,6 +1,7 @@
 class IssuesController < ApplicationController
   def pick_grouping
     issue = Issue.find(params[:id])
+    authorize issue, :pick_grouping?
     grouping = issue.project.default_visualization.groupings.find_by(id: params[:grouping_id])
 
     if grouping.present?
@@ -18,6 +19,7 @@ class IssuesController < ApplicationController
     # users are editing the same issue
     # at the same time.
     @issue = Issue.find(params[:id])
+    authorize @issue, :update_description?
     @issue.update(description: params[:description])
 
     head :ok
@@ -25,26 +27,31 @@ class IssuesController < ApplicationController
 
   def archive
     @issue = Issue.find(params[:id])
+    authorize @issue
     @issue.archive!
   end
 
   def unarchive
     @issue = Issue.find(params[:id])
+    authorize @issue
     @issue.unarchive!
   end
 
   def destroy
     @issue = Issue.find(params[:id])
+    authorize @issue
     @issue.destroy
   end
 
   def finish
     @issue = Issue.find(params[:id])
+    authorize @issue
     @issue.finish!
   end
 
   def unfinish
     @issue = Issue.find(params[:id])
+    authorize @issue
     @issue.unfinish!
   end
 end

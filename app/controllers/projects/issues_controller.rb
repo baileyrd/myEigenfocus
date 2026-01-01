@@ -2,7 +2,7 @@ class Projects::IssuesController < Projects::BaseController
   include IssueEmbeddable
 
   def index
-    @q = current_project.issues.ransack(params[:q])
+    @q = policy_scope(current_project.issues).ransack(params[:q])
     @q.sorts = "updated_at desc" if @q.sorts.empty?
     @q.by_archiving_status ||= "active"
 
@@ -12,6 +12,7 @@ class Projects::IssuesController < Projects::BaseController
 
     if params[:id]
       @issue = Issue.find(params[:id])
+      authorize @issue
       open_issue(
         @issue,
         back_path: project_issues_path(current_project),
@@ -24,6 +25,7 @@ class Projects::IssuesController < Projects::BaseController
 
   def new
     @issue = current_project.issues.new
+    authorize @issue
 
     unless turbo_frame_request?
       redirect_to project_issues_path(current_project, open_form: true)
@@ -33,6 +35,7 @@ class Projects::IssuesController < Projects::BaseController
   def create
     @issue = current_project.issues.new(permitted_params)
     @issue.creator = current_user # Phase 1: Set creator
+    authorize @issue
 
     if @issue.save
       redirect_to project_issues_path, notice: t_flash_message(@issue)
@@ -47,11 +50,13 @@ class Projects::IssuesController < Projects::BaseController
 
   def update
     @issue = Issue.find(params[:id])
+    authorize @issue
     @updated = @issue.update(permitted_params)
   end
 
   def add_label
     issue = Issue.find(params[:id])
+    authorize issue, :add_label?
     label = current_project.issue_labels.with_title(params[:label][:title]).first
     label ||= current_project.issue_labels.create(title: params[:label][:title], hex_color: params[:label][:hex_color])
 
@@ -64,6 +69,7 @@ class Projects::IssuesController < Projects::BaseController
 
   def remove_label
     issue = Issue.find(params[:id])
+    authorize issue, :remove_label?
     label = issue.labels.with_title(params[:label][:title]).first
 
     # "Prevents" (at least for % 99,42 of the cases)

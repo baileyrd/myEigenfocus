@@ -2,6 +2,7 @@ class Visualizations::IssuesController < Visualizations::BaseController
   def create
     @issue = Issue.new(permitted_params.merge(project_id: current_visualization.project.id))
     @issue.creator = current_user # Phase 1: Set creator
+    authorize @issue
     @grouping = Grouping.find params[:allocate_to_grouping_id]
 
     ActiveRecord::Base.transaction do
@@ -13,6 +14,7 @@ class Visualizations::IssuesController < Visualizations::BaseController
 
   def update
     @issue = Issue.find(params[:id])
+    authorize @issue
     @updated = @issue.update(permitted_params)
   end
 

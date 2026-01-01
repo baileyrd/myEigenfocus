@@ -1,10 +1,11 @@
 class ProjectsController < ApplicationController
   def index
-    @projects = Project.order(archived_at: :asc, name: :asc).all
+    @projects = policy_scope(Project).order(archived_at: :asc, name: :asc)
   end
 
   def new
     @project = Project.new
+    authorize @project
     @project.use_template = :basic_kanban
     if turbo_frame_request?
       render partial: "form", locals: { project: @project }
@@ -17,6 +18,7 @@ class ProjectsController < ApplicationController
     @project = Project.new(project_params)
     @project.use_template = params[:project][:use_template]
     @project.owner = current_user # Phase 1: Set owner
+    authorize @project
 
     suppressing_template_related_broadcasts do
       if @project.save
@@ -30,6 +32,7 @@ class ProjectsController < ApplicationController
 
   def edit
     @project = Project.find(params[:id])
+    authorize @project
 
     if turbo_frame_request?
       render partial: "form", locals: { project: @project }
@@ -40,24 +43,28 @@ class ProjectsController < ApplicationController
 
   def update
     @project = Project.find(params[:id])
+    authorize @project
 
     @updated = @project.update(project_params)
   end
 
   def archive
     @project = Project.find(params[:id])
+    authorize @project
 
     @project.archive!
   end
 
   def unarchive
     @project = Project.find(params[:id])
+    authorize @project
 
     @project.unarchive!
   end
 
   def destroy
     @project = Project.find(params[:id])
+    authorize @project
 
     if @project.destroy
       flash[:success] = t_flash_message(@project)
