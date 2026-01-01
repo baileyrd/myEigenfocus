@@ -1,0 +1,48 @@
+<%# Grid View for Issues %>
+<div class="grid-view-container h-full flex flex-col">
+  <div class="grid-header p-4 border-b border-base-300">
+    <h2 class="text-xl font-semibold">Grid View</h2>
+    <p class="text-sm text-base-content/70 mt-1">
+      Spreadsheet-style view with inline editing capabilities
+    </p>
+  </div>
+
+  <div class="grid-wrapper flex-1 p-4"
+       data-controller="visualization--grid"
+       data-visualization--grid-project-id-value="<%= visualization.project.id %>"
+       data-visualization--grid-issues-value="<%= issues_data(visualization).to_json %>"
+       data-visualization--grid-statuses-value="<%= statuses_data(visualization.project).to_json %>"
+       data-visualization--grid-types-value="<%= types_data(visualization.project).to_json %>"
+       data-visualization--grid-members-value="<%= members_data(visualization.project).to_json %>"
+       >
+    <div class="ag-theme-alpine w-full h-full"
+         data-visualization--grid-target="grid"
+         style="min-height: 500px;">
+    </div>
+  </div>
+</div>
+
+<style>
+  .grid-view-container {
+    background: var(--fallback-b1,oklch(var(--b1)));
+  }
+
+  .ag-theme-alpine {
+    --ag-foreground-color: var(--fallback-bc,oklch(var(--bc)));
+    --ag-background-color: var(--fallback-b1,oklch(var(--b1)));
+    --ag-header-foreground-color: var(--fallback-bc,oklch(var(--bc)));
+    --ag-header-background-color: var(--fallback-b2,oklch(var(--b2)));
+    --ag-odd-row-background-color: var(--fallback-b1,oklch(var(--b1)));
+    --ag-header-column-resize-handle-color: var(--fallback-bc,oklch(var(--bc)/0.3));
+    --ag-font-size: 14px;
+    --ag-font-family: inherit;
+  }
+
+  .ag-theme-alpine .ag-row {
+    border-color: var(--fallback-b3,oklch(var(--b3)));
+  }
+
+  .ag-theme-alpine .ag-cell {
+    line-height: 40px;
+  }
+</style>

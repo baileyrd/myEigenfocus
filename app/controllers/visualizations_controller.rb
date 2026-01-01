@@ -3,6 +3,7 @@ class VisualizationsController < ApplicationController
 
   def show
     @visualization = Visualization.includes(groupings: :issues).find(params[:id])
+    authorize @visualization
     skip_layout_content_wrapper!
 
     if params[:issue_id]
@@ -17,6 +18,7 @@ class VisualizationsController < ApplicationController
 
   def update
     @visualization = Visualization.find(params[:id])
+    authorize @visualization
 
     @updated = @visualization.update(visualization_params)
   end

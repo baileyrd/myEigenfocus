@@ -9,7 +9,9 @@
   project: @visualization.project
 } %>
 
-
+<% if @visualization.grid_view? %>
+  <%= render partial: 'grid_view', locals: { visualization: @visualization } %>
+<% else %>
 <main class="grow  visualization--board tour--visualization-board"
   data-controller="visualization--issue-filtering visualization--favorite-issue-labels"
   data-action="keydown@window->visualization--favorite-issue-labels#onKeyPress"
@@ -51,3 +53,4 @@
 
   </div>
 </main>
+<% end %>

@@ -1,7 +1,7 @@
 class Visualization < ApplicationRecord
   self.inheritance_column = "_type"
 
-  VALID_TYPES = [ "board" ]
+  VALID_TYPES = [ "board", "grid" ]
   VALID_GROUP_BY = [ "manual", "status", "assignee", "type", "label" ]
 
   # Associations
@@ -38,6 +38,15 @@ class Visualization < ApplicationRecord
 
   def manual_mode?
     group_by == "manual"
+  end
+
+  # Phase 5: View type helpers
+  def grid_view?
+    type == "grid"
+  end
+
+  def board_view?
+    type == "board"
   end
 
   def grouped_issues
