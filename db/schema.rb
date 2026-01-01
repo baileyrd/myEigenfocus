@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_01_184847) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_01_185517) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -63,10 +63,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_01_184847) do
     t.datetime "created_at", null: false
     t.boolean "hidden", default: false, null: false
     t.integer "position", null: false
+    t.string "projection_key"
     t.string "title"
     t.datetime "updated_at", null: false
     t.integer "visualization_id", null: false
+    t.index ["projection_key"], name: "index_groupings_on_projection_key"
     t.index ["visualization_id", "position"], name: "index_groupings_on_visualization_id_and_position", unique: true
+    t.index ["visualization_id", "projection_key"], name: "index_groupings_on_visualization_id_and_projection_key", unique: true, where: "projection_key IS NOT NULL"
     t.index ["visualization_id"], name: "index_groupings_on_visualization_id"
   end
 
@@ -197,11 +200,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_01_184847) do
   end
 
   create_table "visualizations", force: :cascade do |t|
+    t.boolean "auto_generate_groups", default: false, null: false
     t.datetime "created_at", null: false
     t.json "favorite_issue_labels", default: [], null: false
+    t.string "group_by", default: "manual"
     t.integer "project_id", null: false
     t.string "type", default: "board"
     t.datetime "updated_at", null: false
+    t.index ["project_id", "group_by"], name: "index_visualizations_on_project_id_and_group_by"
     t.index ["project_id"], name: "index_visualizations_on_project_id"
   end
 
