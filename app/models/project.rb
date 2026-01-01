@@ -13,6 +13,10 @@ class Project < ApplicationRecord
   has_many :project_memberships, dependent: :destroy
   has_many :members, through: :project_memberships, source: :user
 
+  # Relations - Custom Statuses & Types (Phase 3)
+  has_many :issue_statuses, dependent: :destroy
+  has_many :issue_types, dependent: :destroy
+
   # Validations
   validates :name, presence: true
   validates :use_template, inclusion: { in: Project::Templatable::Template::AVAILABLE_TEMPLATES }, on: :create, if: -> { use_template.present? }

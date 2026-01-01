@@ -17,6 +17,10 @@ class Issue < ApplicationRecord
   belongs_to :creator, class_name: "User", optional: true
   belongs_to :assigned_user, class_name: "User", optional: true
 
+  # Relations - Custom Statuses & Types (Phase 3)
+  belongs_to :issue_status, optional: true
+  belongs_to :issue_type, optional: true
+
   # Validations
   validates :title, presence: true
 
@@ -91,7 +95,7 @@ class Issue < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    [ "title", "due_date", "created_at", "updated_at", "creator_id", "assigned_user_id" ]
+    [ "title", "due_date", "created_at", "updated_at", "creator_id", "assigned_user_id", "issue_status_id", "issue_type_id" ]
   end
 
   def self.ransackable_associations(auth_object = nil)

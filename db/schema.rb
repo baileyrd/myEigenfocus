@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2025_10_12_010305) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_01_184847) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -100,6 +100,34 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_12_010305) do
     t.index ["title"], name: "index_issue_labels_on_title"
   end
 
+  create_table "issue_statuses", force: :cascade do |t|
+    t.string "color", default: "#6B7280"
+    t.datetime "created_at", null: false
+    t.boolean "is_closed", default: false, null: false
+    t.boolean "is_default", default: false, null: false
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.integer "project_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "name"], name: "index_issue_statuses_on_project_id_and_name", unique: true
+    t.index ["project_id", "position"], name: "index_issue_statuses_on_project_id_and_position"
+    t.index ["project_id"], name: "index_issue_statuses_on_project_id"
+  end
+
+  create_table "issue_types", force: :cascade do |t|
+    t.string "color", default: "#6B7280"
+    t.datetime "created_at", null: false
+    t.string "icon", default: "📋"
+    t.boolean "is_default", default: false, null: false
+    t.string "name", null: false
+    t.integer "position", default: 0, null: false
+    t.integer "project_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "name"], name: "index_issue_types_on_project_id_and_name", unique: true
+    t.index ["project_id", "position"], name: "index_issue_types_on_project_id_and_position"
+    t.index ["project_id"], name: "index_issue_types_on_project_id"
+  end
+
   create_table "issues", force: :cascade do |t|
     t.datetime "archived_at"
     t.integer "comments_count", default: 0, null: false
@@ -107,10 +135,14 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_12_010305) do
     t.string "description"
     t.date "due_date"
     t.datetime "finished_at"
+    t.integer "issue_status_id"
+    t.integer "issue_type_id"
     t.integer "project_id"
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["archived_at"], name: "index_issues_on_archived_at"
+    t.index ["issue_status_id"], name: "index_issues_on_issue_status_id"
+    t.index ["issue_type_id"], name: "index_issues_on_issue_type_id"
     t.index ["project_id"], name: "index_issues_on_project_id"
   end
 
@@ -182,6 +214,10 @@ ActiveRecord::Schema[8.1].define(version: 2025_10_12_010305) do
   add_foreign_key "issue_comments", "users", column: "author_id"
   add_foreign_key "issue_label_links", "issue_labels"
   add_foreign_key "issue_label_links", "issues"
+  add_foreign_key "issue_statuses", "projects"
+  add_foreign_key "issue_types", "projects"
+  add_foreign_key "issues", "issue_statuses"
+  add_foreign_key "issues", "issue_types"
   add_foreign_key "issues", "projects"
   add_foreign_key "time_entries", "projects"
   add_foreign_key "time_entries", "users"
