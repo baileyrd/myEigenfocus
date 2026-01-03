@@ -9,8 +9,8 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
   # Authorization (Phase 2)
-  after_action :verify_authorized, except: :index, unless: :skip_pundit_verification?
-  after_action :verify_policy_scoped, only: :index, unless: :skip_pundit_verification?
+  after_action :verify_authorized, except: :index, if: :verify_pundit?
+  after_action :verify_policy_scoped, only: :index, if: :verify_pundit?
 
   # Pundit error handling
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
@@ -93,8 +93,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def skip_pundit_verification?
-    devise_controller? || !respond_to?(action_name, true)
+  def verify_pundit?
+    !devise_controller?
   end
 
   def user_not_authorized
