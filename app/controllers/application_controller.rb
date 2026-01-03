@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   helper_method :t_flash_message
 
   # Hooks
-  before_action :ensure_user_profile_is_complete
+  before_action :ensure_user_profile_is_complete, unless: :devise_controller?
   before_action :update_app_metadata_daily_usage
   around_action :switch_locale
   around_action :switch_time_zone
@@ -43,6 +43,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_user_profile_is_complete
+    return unless user_signed_in?
     unless current_user.is_profile_complete?
       redirect_to edit_profile_path
     end
