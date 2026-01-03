@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_03_153407) do
+ActiveRecord::Schema[8.1].define(version: 2026_01_03_181637) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.bigint "blob_id", null: false
     t.datetime "created_at", null: false
@@ -133,8 +133,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_03_153407) do
 
   create_table "issues", force: :cascade do |t|
     t.datetime "archived_at"
+    t.integer "assigned_user_id"
     t.integer "comments_count", default: 0, null: false
     t.datetime "created_at", null: false
+    t.integer "creator_id"
     t.string "description"
     t.date "due_date"
     t.datetime "finished_at"
@@ -144,6 +146,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_03_153407) do
     t.string "title"
     t.datetime "updated_at", null: false
     t.index ["archived_at"], name: "index_issues_on_archived_at"
+    t.index ["assigned_user_id"], name: "index_issues_on_assigned_user_id"
+    t.index ["creator_id"], name: "index_issues_on_creator_id"
     t.index ["issue_status_id"], name: "index_issues_on_issue_status_id"
     t.index ["issue_type_id"], name: "index_issues_on_issue_type_id"
     t.index ["project_id"], name: "index_issues_on_project_id"
@@ -161,12 +165,25 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_03_153407) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "project_memberships", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "project_id", null: false
+    t.string "role", default: "viewer", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id", null: false
+    t.index ["project_id", "user_id"], name: "index_project_memberships_on_project_id_and_user_id", unique: true
+    t.index ["project_id"], name: "index_project_memberships_on_project_id"
+    t.index ["user_id"], name: "index_project_memberships_on_user_id"
+  end
+
   create_table "projects", force: :cascade do |t|
     t.datetime "archived_at"
     t.datetime "created_at", null: false
     t.string "name"
+    t.integer "owner_id"
     t.boolean "time_tracking_enabled", default: true, null: false
     t.datetime "updated_at", null: false
+    t.index ["owner_id"], name: "index_projects_on_owner_id"
   end
 
   create_table "time_entries", force: :cascade do |t|
@@ -192,12 +209,26 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_03_153407) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "avatar_url"
     t.datetime "created_at", null: false
+    t.datetime "current_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
     t.string "favorite_theme_key"
+    t.datetime "last_sign_in_at"
+    t.string "last_sign_in_ip"
     t.string "locale", limit: 5
+    t.string "name"
+    t.datetime "remember_created_at"
+    t.datetime "reset_password_sent_at"
+    t.string "reset_password_token"
     t.string "role", default: "member", null: false
+    t.integer "sign_in_count", default: 0, null: false
     t.string "timezone"
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
     t.index ["role"], name: "index_users_on_role"
   end
 
@@ -227,6 +258,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_03_153407) do
   add_foreign_key "issues", "issue_statuses"
   add_foreign_key "issues", "issue_types"
   add_foreign_key "issues", "projects"
+  add_foreign_key "issues", "users", column: "assigned_user_id"
+  add_foreign_key "issues", "users", column: "creator_id"
+  add_foreign_key "project_memberships", "projects"
+  add_foreign_key "project_memberships", "users"
+  add_foreign_key "projects", "users", column: "owner_id"
   add_foreign_key "time_entries", "projects"
   add_foreign_key "time_entries", "users"
   add_foreign_key "user_preferences", "users"
