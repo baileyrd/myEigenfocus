@@ -9,8 +9,8 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
   # Authorization (Phase 2)
-  after_action :verify_authorized, except: :index, unless: :devise_controller?
-  after_action :verify_policy_scoped, only: :index, unless: :devise_controller?
+  after_action :verify_authorized, except: :index, unless: :skip_pundit_verification?
+  after_action :verify_policy_scoped, only: :index, unless: :skip_pundit_verification?
 
   # Pundit error handling
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
@@ -92,6 +92,10 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def skip_pundit_verification?
+    devise_controller? || !respond_to?(action_name, true)
+  end
 
   def user_not_authorized
     flash[:error] = "You are not authorized to perform this action."
